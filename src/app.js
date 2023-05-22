@@ -1,10 +1,15 @@
 const express = require('express');
+
+const engine = require('./config/handleEngine');
+
 const app = express();
 
 const PORT = 5000;
 
+engine.useHandlebarsEngine(app);
+
 app.get('/', (req, res) => {
-  res.send('test');
+  res.render('index', { layout: false });
 });
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}...`));
