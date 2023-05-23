@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 engine.useHandlebarsEngine(app);
 
 app.get('/', (req, res) => {
-  res.render('index', { layout: false });
+  res.render('index');
 });
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}...`));
