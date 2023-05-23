@@ -1,6 +1,6 @@
 const uniqid = require('uniqid');
 
-const cubes = 0;
+const cubes = [];
 
 exports.create = (data) => {
   const newCube = {
