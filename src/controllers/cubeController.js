@@ -19,8 +19,8 @@ router.post('/create', (req, res) => {
   res.redirect('/');
 });
 
-router.get('/details/:cubeName', (req, res) => {
-  const cube = cubeService.getByName(req.params.cubeName);
+router.get('/details/:slug', (req, res) => {
+  const cube = cubeService.getBySlug(req.params.slug);
 
   res.render('details', { cube });
 });

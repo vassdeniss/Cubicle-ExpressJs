@@ -1,4 +1,5 @@
 const uniqid = require('uniqid');
+const slugify = require('slugify');
 
 const cubes = [
   {
@@ -8,6 +9,7 @@ const cubes = [
     imageUrl:
       'http://www.bezpanika.com/images/stories/main_NEW/gan_13_mainn.jpg',
     difficultyLevel: 3,
+    slug: 'gan-13-maglev',
   },
 ];
 
@@ -15,21 +17,27 @@ exports.getAll = () => {
   return cubes.slice();
 };
 
-exports.getByName = (name) => {
-  return cubes.find((cube) => normalize(cube.name) === name);
+exports.getBySlug = (name) => {
+  const slugged = slugify(name, {
+    replacement: '-',
+    lower: true,
+    strict: true,
+  });
+  return cubes.find((cube) => cube.slug === slugged);
 };
 
 exports.create = (data) => {
   const newCube = {
     id: uniqid(),
     ...data,
+    slug: slugify(data.name, {
+      replacement: '-',
+      lower: true,
+      strict: true,
+    }),
   };
 
   cubes.push(newCube);
 
   return newCube;
 };
-
-function normalize(name) {
-  return name.replaceAll(new RegExp(/\s+/g), '-').toLowerCase();
-}
