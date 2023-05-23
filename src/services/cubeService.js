@@ -15,6 +15,10 @@ exports.getAll = () => {
   return cubes.slice();
 };
 
+exports.getByName = (name) => {
+  return cubes.find((cube) => normalize(cube.name) === name);
+};
+
 exports.create = (data) => {
   const newCube = {
     id: uniqid(),
@@ -25,3 +29,7 @@ exports.create = (data) => {
 
   return newCube;
 };
+
+function normalize(name) {
+  return name.replaceAll(new RegExp(/\s+/g), '-').toLowerCase();
+}
