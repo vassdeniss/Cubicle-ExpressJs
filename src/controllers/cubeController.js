@@ -9,16 +9,14 @@ router.get('/create', (req, res) => {
 router.post('/create', (req, res) => {
   const { name, description, imageUrl, difficultyLevel } = req.body;
 
-  const cube = cubeService.create({
+  cubeService.create({
     name,
     description,
     imageUrl,
     difficultyLevel: Number(difficultyLevel),
   });
 
-  res.json(cube);
-
-  //res.redirect('/');
+  res.redirect('/');
 });
 
 module.exports = router;
