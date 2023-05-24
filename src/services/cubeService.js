@@ -23,6 +23,7 @@ exports.getBySlug = (name) => {
     lower: true,
     strict: true,
   });
+
   return cubes.find((cube) => cube.slug === slugged);
 };
 

@@ -22,6 +22,10 @@ router.post('/create', (req, res) => {
 router.get('/details/:slug', (req, res) => {
   const cube = cubeService.getBySlug(req.params.slug);
 
+  if (!cube) {
+    return res.redirect('/404');
+  }
+
   res.render('details', { cube });
 });
 
