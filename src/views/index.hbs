@@ -16,11 +16,15 @@
   />
   <input type='submit' value='search' />
 </form>
-{{#each cubes}}
-  <div class='cube'>
-    <img class='cube' src='{{imageUrl}}' />
-    <p class='name'>{{name}}</p>
-    <p><span>Difficulty level:</span> {{difficultyLevel}}</p>
-    <a class='btn' href='/cubes/details/{{slug}}'>Details</a>
-  </div>
-{{/each}}
+{{#if hasCubes}}
+  {{#each cubes}}
+    <div class='cube'>
+      <img class='cube' src='{{imageUrl}}' />
+      <p class='name'>{{name}}</p>
+      <p><span>Difficulty level:</span> {{difficultyLevel}}</p>
+      <a class='btn' href='/cubes/details/{{_id}}'>Details</a>
+    </div>
+  {{/each}}
+{{else}}
+  <h1>No Cubes Added!</h1>
+{{/if}}
