@@ -17,21 +17,16 @@ exports.getBySlug = (slug) => {
   // return cubes.find((cube) => cube.slug === slugged);
 };
 
-exports.create = async (data) => {
-  const cube = await Cube.create(data);
+exports.create = (data) => Cube.create(data);
+// TODO: fix slugs
+// const newCube = {
+//   id: uniqid(),
+//   ...data,
+//   slug: slugify(data.name, {
+//     replacement: '-',
+//     lower: true,
+//     strict: true,
+//   }),
+// };
 
-  // TODO: fix slugs
-  // const newCube = {
-  //   id: uniqid(),
-  //   ...data,
-  //   slug: slugify(data.name, {
-  //     replacement: '-',
-  //     lower: true,
-  //     strict: true,
-  //   }),
-  // };
-
-  // cubes.push(newCube);
-
-  return cube;
-};
+// cubes.push(newCube);
