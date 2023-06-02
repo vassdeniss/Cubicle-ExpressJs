@@ -30,3 +30,9 @@ exports.create = (data) => Cube.create(data);
 // };
 
 // cubes.push(newCube);
+
+exports.attachAccessory = async (cubeId, accessoryId) => {
+  const cube = await Cube.findById(cubeId);
+  cube.accessories.push(accessoryId);
+  return cube.save();
+};
