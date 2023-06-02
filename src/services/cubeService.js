@@ -7,6 +7,16 @@ exports.getAll = () => Cube.find();
 
 exports.get = (cubeId) => Cube.findById(cubeId);
 
+exports.getWith = (cubeId, ...includes) => {
+  let cube = Cube.findById(cubeId);
+
+  for (const include of includes) {
+    cube = cube.populate(include);
+  }
+
+  return cube;
+};
+
 exports.getBySlug = (slug) => {
   // TODO: fix
   // const slugged = slugify(slug, {
