@@ -6,6 +6,14 @@ router.get('/login', (req, res) => {
   res.render('user/login');
 });
 
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  await userService.login(username, password);
+
+  res.redirect('/');
+});
+
 router.get('/register', (req, res) => {
   res.render('user/register');
 });
