@@ -10,7 +10,7 @@ router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   const token = await userService.login(username, password);
-  res.cookie('user-token', token);
+  res.cookie('user-token', token, { httpOnly: true });
 
   res.redirect('/');
 });
