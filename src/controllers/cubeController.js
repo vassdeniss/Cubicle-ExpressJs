@@ -10,6 +10,8 @@ router.get('/create', (req, res) => {
 router.post('/create', async (req, res) => {
   const { name, description, imageUrl, difficultyLevel } = req.body;
 
+  console.log(req.user);
+
   await cubeService.create({
     name,
     description,
@@ -59,6 +61,11 @@ router.get('/delete/:cubeId', async (req, res) => {
   const title = getDifficulties(cube.difficultyLevel);
 
   res.render('cube/delete', { cube, title });
+});
+
+router.post('/delete/:cubeId', async (req, res) => {
+  await cubeService.delete(req.params.cubeId);
+  res.redirect('/');
 });
 
 function getDifficulties(difficulty) {
