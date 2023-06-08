@@ -58,14 +58,27 @@ router.post('/attach/:cubeId', async (req, res) => {
 
 router.get('/delete/:cubeId', async (req, res) => {
   const cube = await cubeService.get(req.params.cubeId).lean();
-  const title = getDifficulties(cube.difficultyLevel);
+  const options = getDifficulties(cube.difficultyLevel);
 
-  res.render('cube/delete', { cube, title });
+  res.render('cube/delete', { cube, options });
 });
 
 router.post('/delete/:cubeId', async (req, res) => {
   await cubeService.delete(req.params.cubeId);
   res.redirect('/');
+});
+
+router.get('/edit/:cubeId', async (req, res) => {
+  const cube = await cubeService.get(req.params.cubeId).lean();
+  const options = getDifficulties(cube.difficultyLevel);
+
+  res.render('cube/edit', { cube, options });
+});
+
+router.post('/edit/:cubeId', async (req, res) => {
+  await cubeService.update(req.params.cubeId, req.body);
+
+  res.redirect(`/cubes/details/${req.params.cubeId}`);
 });
 
 function getDifficulties(difficulty) {
@@ -78,7 +91,13 @@ function getDifficulties(difficulty) {
     '6 - Hardcore',
   ];
 
-  return titles[Number(difficulty) - 1];
+  const options = titles.map((v, i) => ({
+    title: v,
+    value: i + 1,
+    isSelected: Number(difficulty) === i + 1,
+  }));
+
+  return options;
 }
 
 module.exports = router;

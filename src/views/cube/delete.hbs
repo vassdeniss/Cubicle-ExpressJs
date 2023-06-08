@@ -25,7 +25,9 @@
     />
     <label for='difficulty'>Difficulty</label>
     <select id='difficulty' name='difficultyLevel' value='' disabled>
-      <option selected>{{title}}</option>
+      {{#each options}}
+        <option value="{{value}}" {{#if isSelected}}selected{{/if}}>{{title}}</option>
+      {{/each}}
     </select>
     <input type='submit' value='Delete' />
   </form>
