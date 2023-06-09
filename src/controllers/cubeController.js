@@ -3,24 +3,29 @@ const router = require('express').Router();
 const cubeService = require('../services/cubeService');
 const accessoryService = require('../services/accessoryService');
 
-router.get('/create', (req, res) => {
+const { getErrors } = require('../utils/errorHelper');
+const { isAuth } = require('../middlewares/auth');
+
+router.get('/create', isAuth, (req, res) => {
   res.render('cube/create');
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', isAuth, async (req, res) => {
   const { name, description, imageUrl, difficultyLevel } = req.body;
 
-  console.log(req.user);
+  try {
+    await cubeService.create({
+      name,
+      description,
+      imageUrl,
+      difficultyLevel: Number(difficultyLevel),
+      owner: req.user._id,
+    });
 
-  await cubeService.create({
-    name,
-    description,
-    imageUrl,
-    difficultyLevel: Number(difficultyLevel),
-    owner: req.user._id,
-  });
-
-  res.redirect('/');
+    res.redirect('/');
+  } catch (err) {
+    res.render('cube/create', { errorMessages: getErrors(err) });
+  }
 });
 
 // TODO: fix slug

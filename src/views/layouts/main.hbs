@@ -22,6 +22,11 @@
           {{/if}}
         </ul>
       </header>
+      {{#each errorMessages}}
+        <div id='notifications'>
+          <p id='notification-message'>{{this}}</p>
+        </div>
+      {{/each}}
       <main>
         {{{body}}}
       </main>
