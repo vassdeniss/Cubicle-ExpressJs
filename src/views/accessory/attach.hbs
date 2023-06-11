@@ -11,6 +11,7 @@
         {{/each}}
       </select>
       <input type='submit' value='Attach' />
+      <input id='ownerId' name='ownerId' value='{{cube.owner._id}}' hidden />
     </form>
   {{else}}
     <h3 class='italic'>This cube has all available accessories so far or there

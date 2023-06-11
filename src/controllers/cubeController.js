@@ -32,58 +32,117 @@ router.post('/create', isAuth, async (req, res) => {
 // router.get('/details/:slug', (req, res) => {
 router.get('/details/:cubeId', async (req, res) => {
   //const cube = cubeService.getBySlug(req.params.slug);
-  const cube = await cubeService
-    .getWith(req.params.cubeId, 'accessories')
-    .lean();
-
-  if (!cube) {
+  let cube;
+  try {
+    cube = await cubeService.getWith(req.params.cubeId, 'accessories').lean();
+  } catch (_) {
     return res.redirect('/404');
   }
 
-  res.render('cube/details', { cube });
+  const isOwner = cube.owner.toString() === req.user?._id;
+
+  res.render('cube/details', { cube, isOwner });
 });
 
-router.get('/attach/:cubeId', async (req, res) => {
-  const cube = await cubeService.get(req.params.cubeId).lean();
-  const accessories = await accessoryService.getExcept(cube.accessories).lean();
+router.get('/attach/:cubeId', isAuth, async (req, res, next) => {
+  let cube;
+  try {
+    cube = await cubeService.get(req.params.cubeId).lean();
+  } catch (_) {
+    return res.redirect('/404');
+  }
 
+  if (cube.owner.toString() !== req.user?._id) {
+    return next(new Error('You do not own this cube!'));
+  }
+
+  const accessories = await accessoryService.getExcept(cube.accessories).lean();
   const hasAccessories = accessories.length > 0;
 
   res.render('accessory/attach', { cube, accessories, hasAccessories });
 });
 
-router.post('/attach/:cubeId', async (req, res) => {
+router.post('/attach/:cubeId', isAuth, async (req, res, next) => {
   const cubeId = req.params.cubeId;
-  const { accessory: accessoryId } = req.body;
+  const { accessory: accessoryId, ownerId } = req.body;
 
-  await cubeService.attachAccessory(cubeId, accessoryId);
+  if (ownerId !== req.user?._id) {
+    return next(new Error('You do not own this cube!'));
+  }
 
-  res.redirect(`/cubes/details/${cubeId}`);
+  try {
+    await cubeService.attachAccessory(cubeId, accessoryId);
+    res.redirect(`/cubes/details/${cubeId}`);
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.get('/delete/:cubeId', async (req, res) => {
-  const cube = await cubeService.get(req.params.cubeId).lean();
+router.get('/delete/:cubeId', isAuth, async (req, res, next) => {
+  let cube;
+  try {
+    cube = await cubeService.get(req.params.cubeId).lean();
+  } catch (_) {
+    return res.redirect('/404');
+  }
+
+  if (cube.owner.toString() !== req.user?._id) {
+    return next(new Error('You do not own this cube!'));
+  }
+
   const options = getDifficulties(cube.difficultyLevel);
 
   res.render('cube/delete', { cube, options });
 });
 
-router.post('/delete/:cubeId', async (req, res) => {
+router.post('/delete/:cubeId', isAuth, async (req, res, next) => {
+  const { ownerId } = req.body;
+
+  if (ownerId !== req.user?._id) {
+    return next(new Error('You do not own this cube!'));
+  }
+
   await cubeService.delete(req.params.cubeId);
   res.redirect('/');
 });
 
-router.get('/edit/:cubeId', async (req, res) => {
-  const cube = await cubeService.get(req.params.cubeId).lean();
+router.get('/edit/:cubeId', isAuth, async (req, res, next) => {
+  let cube;
+  try {
+    cube = await cubeService.get(req.params.cubeId).lean();
+  } catch (_) {
+    return res.redirect('/404');
+  }
+
+  if (cube.owner.toString() !== req.user?._id) {
+    return next(new Error('You do not own this cube!'));
+  }
+
   const options = getDifficulties(cube.difficultyLevel);
 
   res.render('cube/edit', { cube, options });
 });
 
-router.post('/edit/:cubeId', async (req, res) => {
-  await cubeService.update(req.params.cubeId, req.body);
+router.post('/edit/:cubeId', isAuth, async (req, res, next) => {
+  const { name, description, imageUrl, difficultyLevel, ownerId } = req.body;
 
-  res.redirect(`/cubes/details/${req.params.cubeId}`);
+  if (ownerId !== req.user?._id) {
+    return next(new Error('You do not own this cube!'));
+  }
+
+  try {
+    await cubeService.update(req.params.cubeId, {
+      name,
+      description,
+      imageUrl,
+      difficultyLevel,
+    });
+    res.redirect(`/cubes/details/${req.params.cubeId}`);
+  } catch (err) {
+    const cube = await cubeService.get(req.params.cubeId).lean();
+    const options = getDifficulties(cube.difficultyLevel);
+    res.render('cube/edit', { cube, options, errorMessages: getErrors(err) });
+  }
 });
 
 function getDifficulties(difficulty) {
@@ -99,7 +158,7 @@ function getDifficulties(difficulty) {
   const options = titles.map((v, i) => ({
     title: v,
     value: i + 1,
-    isSelected: Number(difficulty) === i + 1,
+    selected: Number(difficulty) === i + 1 ? 'selected' : '',
   }));
 
   return options;
