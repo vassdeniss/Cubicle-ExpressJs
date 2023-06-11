@@ -9,6 +9,8 @@ const cubeController = require('./controllers/cubeController');
 const accessoryController = require('./controllers/accessoryController');
 const userController = require('./controllers/userController');
 
+const errorHandler = require('./middlewares/errorHandler');
+
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -27,5 +29,7 @@ app.use('/users', userController);
 app.get('*', (req, res) => {
   res.redirect('/404');
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}...`));
