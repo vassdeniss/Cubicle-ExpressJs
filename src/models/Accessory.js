@@ -24,7 +24,7 @@ const accessorySchema = new mongoose.Schema({
     required: false,
     match: [
       /^http:\/\/|^https:\/\//,
-      "URL must start with either 'http://' or 'https://'!",
+      'URL must start with either \'http://\' or \'https://\'!',
     ],
   },
 });
