@@ -1,5 +1,5 @@
 <h1>Browse</h1>
-<form action='' method=''>
+<form method='GET'>
   <input type='text' class='search' name='search' placeholder='Search...' />
   <input
     type='number'
@@ -16,15 +16,13 @@
   />
   <input type='submit' value='search' />
 </form>
-{{#if hasCubes}}
-  {{#each cubes}}
-    <div class='cube'>
-      <img class='cube' src='{{imageUrl}}' />
-      <p class='name'>{{name}}</p>
-      <p><span>Difficulty level:</span> {{difficultyLevel}}</p>
-      <a class='btn' href='/cubes/details/{{_id}}'>Details</a>
-    </div>
-  {{/each}}
+{{#each cubes}}
+  <div class='cube'>
+    <img class='cube' src='{{imageUrl}}' />
+    <p class='name'>{{name}}</p>
+    <p><span>Difficulty level:</span> {{difficultyLevel}}</p>
+    <a class='btn' href='/cubes/details/{{_id}}'>Details</a>
+  </div>
 {{else}}
   <h1>No Cubes Added!</h1>
-{{/if}}
+{{/each}}

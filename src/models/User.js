@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
       'Username can only contain alphanumeric characters!',
     ],
     minLength: [5, 'Username must be at least 5 characters long!'],
+    unique: true,
   },
   password: {
     type: String,
